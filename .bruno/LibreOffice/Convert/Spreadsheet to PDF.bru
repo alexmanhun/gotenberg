@@ -1,0 +1,89 @@
+meta {
+  name: Spreadsheet to PDF
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form [
+  {
+    name: files,
+    value: @file(./sample.xlsx),
+    type: file,
+    enabled: true
+  },
+  {
+    name: landscape,
+    value: false,
+    type: text,
+    enabled: true
+  },
+  {
+    name: nativePageRanges,
+    value: 1-2,
+    type: text,
+    enabled: true
+  },
+  {
+    name: exportFormFields,
+    value: false,
+    type: text,
+    enabled: true
+  },
+  {
+    name: singlePageSheets,
+    value: false,
+    type: text,
+    enabled: true
+  },
+  {
+    name: pdfa,
+    value: PDF/A-1b,
+    type: text,
+    enabled: false
+  },
+  {
+    name: pdfua,
+    value: true,
+    type: text,
+    enabled: false
+  },
+  {
+    name: metadata,
+    value: {"Author": "John Doe", "Subject": "Sample Spreadsheet"},
+    type: text,
+    enabled: false
+  },
+  {
+    name: merge,
+    value: false,
+    type: text,
+    enabled: false
+  },
+  {
+    name: downloadFrom,
+    value: {"url": "https://example.com/sample.xlsx", "extraHttpHeaders": {}},
+    type: text,
+    enabled: false
+  }
+]
+
+assert [
+  {
+    name: res.status
+    value: eq 200
+  },
+  {
+    name: res.headers['content-type']
+    value: contains application/pdf
+  }
+]
