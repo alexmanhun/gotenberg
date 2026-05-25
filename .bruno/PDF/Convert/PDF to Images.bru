@@ -1,0 +1,48 @@
+meta {
+  name: PDF to Images
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/forms/pdfengines/convert
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/zip
+}
+
+body:multipart-form {
+  files[]: @file(./sample.pdf)
+  pdfFormat: PDF/A-1a
+}
+
+docs {
+  # PDF to Images
+
+  Converts a PDF file to images using Gotenberg's PDF engines.
+
+  ## Endpoint
+
+  `POST /forms/pdfengines/convert`
+
+  ## Form Fields
+
+  | Field       | Type   | Required | Description                                      |
+  |-------------|--------|----------|--------------------------------------------------|
+  | files[]     | file   | Yes      | One or more PDF files to convert                 |
+  | pdfFormat   | string | No       | Output PDF format (e.g., PDF/A-1a, PDF/A-2b)     |
+
+  ## Response
+
+  Returns a ZIP archive containing the converted files when multiple files
+  are submitted, or a single file if only one file is provided.
+
+  ## Notes
+
+  - Supported PDF formats: `PDF/A-1a`, `PDF/A-2b`, `PDF/A-3b`
+  - The conversion relies on the available PDF engines (e.g., LibreOffice, pdfcpu)
+  - Ensure the input PDF is not password-protected
+}
