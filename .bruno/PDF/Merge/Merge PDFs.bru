@@ -1,0 +1,60 @@
+meta {
+  name: Merge PDFs
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/forms/pdfengines/merge
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+  ~pdfa: PDF/A-1a
+  ~pdfua: true
+  ~metadata: {"Author": "John Doe", "Title": "Merged Document"}
+}
+
+headers {
+  ~Gotenberg-Output-Filename: merged.pdf
+  ~Gotenberg-Trace: merge-pdfs-trace
+  ~Gotenberg-Webhook-Url: https://my.webhook.url
+  ~Gotenberg-Webhook-Error-Url: https://my.webhook.url/error
+  ~Gotenberg-Webhook-Http-Method: POST
+}
+
+body:multipart-form {
+  files[]: @file(./files/document1.pdf)
+  files[]: @file(./files/document2.pdf)
+}
+
+docs {
+  # Merge PDFs
+
+  Merges multiple PDF files into a single PDF document.
+
+  ## Form Fields
+
+  - `files[]`: The PDF files to merge (required, at least two files)
+
+  ## Query Parameters
+
+  - `pdfa`: Convert the resulting PDF to PDF/A format (e.g., `PDF/A-1a`, `PDF/A-2b`, `PDF/A-3b`)
+  - `pdfua`: Enable PDF/UA (Universal Accessibility) compliance
+  - `metadata`: JSON object containing PDF metadata to embed
+
+  ## Headers
+
+  - `Gotenberg-Output-Filename`: The filename for the output file
+  - `Gotenberg-Trace`: A trace ID for logging and debugging purposes
+  - `Gotenberg-Webhook-Url`: Webhook URL to call when the conversion is complete
+  - `Gotenberg-Webhook-Error-Url`: Webhook URL to call if an error occurs
+  - `Gotenberg-Webhook-Http-Method`: HTTP method to use for the webhook call
+
+  ## Notes
+
+  - Files are merged in the order they are provided
+  - All input files must be valid PDF documents
+  - The resulting PDF will contain all pages from all input files in order
+}
