@@ -1,0 +1,113 @@
+meta {
+  name: Drawings to PDF
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/documents
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart-form [
+  {
+    name: files,
+    value: @file(../../../test-files/sample.odg),
+    type: file
+  },
+  {
+    name: landscape,
+    value: false,
+    type: text
+  },
+  {
+    name: nativePageRanges,
+    value: 1-2,
+    type: text
+  },
+  {
+    name: exportFormFields,
+    value: true,
+    type: text
+  },
+  {
+    name: allowDuplicateFieldNames,
+    value: false,
+    type: text
+  },
+  {
+    name: exportBookmarks,
+    value: true,
+    type: text
+  },
+  {
+    name: exportBookmarksToPdfDestination,
+    value: false,
+    type: text
+  },
+  {
+    name: exportPlaceholders,
+    value: false,
+    type: text
+  },
+  {
+    name: exportNotes,
+    value: false,
+    type: text
+  },
+  {
+    name: exportNotesPages,
+    value: false,
+    type: text
+  },
+  {
+    name: exportOnlyNotesPages,
+    value: false,
+    type: text
+  },
+  {
+    name: exportNotesInMargin,
+    value: false,
+    type: text
+  },
+  {
+    name: pdfa,
+    value: false,
+    type: text
+  },
+  {
+    name: pdfua,
+    value: false,
+    type: text
+  },
+  {
+    name: losslessImageCompression,
+    value: false,
+    type: text
+  },
+  {
+    name: quality,
+    value: 90,
+    type: text
+  },
+  {
+    name: reduceImageResolution,
+    value: false,
+    type: text
+  },
+  {
+    name: maxImageResolution,
+    value: 300,
+    type: text
+  }
+]
+
+assert [
+  res.status: eq 200
+  res.headers[content-type]: eq application/pdf
+]
