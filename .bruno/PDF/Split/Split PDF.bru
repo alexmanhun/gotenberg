@@ -1,0 +1,62 @@
+meta {
+  name: Split PDF
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/forms/pdfengines/split
+  body: multipart
+  auth: none
+}
+
+headers {
+  Accept: application/pdf
+}
+
+body:multipart {
+  files[]: @file(./files/sample.pdf)
+  splitMode: intervals
+  splitSpan: 1
+  splitUnify: false
+}
+
+docs {
+  ## Split PDF
+
+  Splits a PDF file into multiple PDFs using the Gotenberg PDF engines API.
+
+  ### Form Fields
+
+  | Field        | Type    | Description                                                                 |
+  |--------------|---------|-----------------------------------------------------------------------------|
+  | files[]      | File    | The PDF file(s) to split.                                                   |
+  | splitMode    | String  | The split mode: `intervals`, `pages`, or `r-intervals`.                     |
+  | splitSpan    | Integer | The span to use for splitting (e.g., every N pages).                        |
+  | splitUnify   | Boolean | Whether to unify the split results into a single PDF. Default: `false`.     |
+
+  ### Split Modes
+
+  - **intervals**: Split every N pages (defined by `splitSpan`).
+  - **pages**: Split at specific page numbers (comma-separated in `splitSpan`).
+  - **r-intervals**: Split in reverse intervals.
+
+  ### Response
+
+  Returns the split PDF file(s). If multiple files are produced and `splitUnify` is `false`,
+  the response will be a ZIP archive containing each split PDF.
+
+  ### Example
+
+  To split a PDF every 2 pages:
+  ```
+  splitMode: intervals
+  splitSpan: 2
+  ```
+
+  To split at specific pages (e.g., pages 2 and 4):
+  ```
+  splitMode: pages
+  splitSpan: 2,4
+  ```
+}
