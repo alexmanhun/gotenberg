@@ -1,0 +1,61 @@
+meta {
+  name: Presentation to PDF
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/forms/libreoffice/convert/office
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+}
+
+headers {
+}
+
+body:multipart-form {
+  files[]: @file(./sample.pptx)
+  landscape: false
+  nativePageRanges: 1-5
+  exportFormFields: true
+  allowDuplicateFieldNames: false
+  exportBookmarks: true
+  exportBookmarksToPdfDestination: false
+  exportPlaceholders: false
+  exportNotes: false
+  exportNotesPages: false
+  exportOnlyNotesPages: false
+  exportNotesInMargin: false
+  convertOooTargetToPdfTarget: false
+  exportLinksRelativeFsys: false
+  exportHiddenSlides: false
+  skipEmptyPages: false
+  addOriginalDocumentAsStream: false
+  pdfFormat: PDF/A-1b
+  universalAccess: false
+  merge: false
+  metadata: {"Author": "Gotenberg", "Subject": "Presentation Conversion"}
+}
+
+script:post-response {
+  if (res.status === 200) {
+    console.log("Presentation converted to PDF successfully");
+    console.log("Content-Type:", res.headers["content-type"]);
+  } else {
+    console.error("Conversion failed with status:", res.status);
+    console.error("Response:", res.body);
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response is a PDF", function() {
+    expect(res.headers["content-type"]).to.include("application/pdf");
+  });
+}
